@@ -10,5 +10,6 @@ namespace Contracts
     public interface IFarmRepository
     {
         IEnumerable<Farm> GetAllFarms(bool trackChanges);
+        Farm GetFarm(Guid farmId, bool trackChanges);
     }
 }

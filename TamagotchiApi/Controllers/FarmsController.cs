@@ -23,10 +23,25 @@ namespace TamagotchiApi.Controllers
         public IActionResult GetFarms()
         {
             var farms = repository.Farm.GetAllFarms(false);
-            
+
             var farmsDto = mapper.Map<IEnumerable<FarmDto>>(farms);
 
             return Ok(farmsDto);
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult GetFarm(Guid id)
+        {
+            var farm = repository.Farm.GetFarm(id, false);
+
+            if (farm == null)
+            {
+                return NotFound();
+            }
+
+            var farmDto = mapper.Map<FarmDto>(farm);
+
+            return Ok(farmDto);
         }
     }
 }

@@ -18,7 +18,12 @@ namespace Repository
 
         public IEnumerable<Farm> GetAllFarms(bool trackChanges)
         {
-            return FindAll(trackChanges).ToList();
+            return FindAll(trackChanges).OrderBy(f => f.Name).ToList();
+        }
+
+        public Farm GetFarm(Guid farmId, bool trackChanges)
+        {
+            return FindByCondition(f => f.Id.Equals(farmId), trackChanges).SingleOrDefault();
         }
     }
 }

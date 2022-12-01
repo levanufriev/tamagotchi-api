@@ -9,6 +9,7 @@ namespace TamagotchiApi
         public MappingProfile() 
         {
             CreateMap<Farm, FarmDto>();
+            CreateMap<Pet, PetDto>();
         }
     }
 }

@@ -15,5 +15,15 @@ namespace Repository
             : base(repositoryContext)
         {                
         }
+
+        public Pet GetPet(Guid farmId, Guid id, bool trackChanges)
+        {
+            return FindByCondition(p => p.FarmId.Equals(farmId) && p.Id.Equals(id), trackChanges).SingleOrDefault();
+        }
+
+        public IEnumerable<Pet> GetPets(Guid farmId, bool trackChanges)
+        {
+            return FindByCondition(p => p.FarmId.Equals(farmId), trackChanges).OrderBy(p => p.Name);
+        }
     }
 }
