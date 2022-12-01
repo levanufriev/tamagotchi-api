@@ -4,14 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Entities.Models
+namespace Entities.DataTransferObjects
 {
-    public class Farm
+    public class FarmDto
     {
         public Guid Id { get; set; }
-
         public string Name { get; set; }
-
-        public ICollection<Pet> Pets { get; set; }
     }
 }

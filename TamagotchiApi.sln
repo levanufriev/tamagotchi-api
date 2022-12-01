@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TamagotchiApi", "Tamagotchi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "Entities\Entities.csproj", "{EB5D09ED-A144-44E7-8AB6-FB50055B812C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contracts", "Contracts\Contracts.csproj", "{8482EE26-DF01-4E9E-8C17-CB0437A8276F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "Repository\Repository.csproj", "{0B5E1D2E-B4FF-422A-AA0E-6BD4B22064CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{EB5D09ED-A144-44E7-8AB6-FB50055B812C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB5D09ED-A144-44E7-8AB6-FB50055B812C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB5D09ED-A144-44E7-8AB6-FB50055B812C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8482EE26-DF01-4E9E-8C17-CB0437A8276F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8482EE26-DF01-4E9E-8C17-CB0437A8276F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8482EE26-DF01-4E9E-8C17-CB0437A8276F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8482EE26-DF01-4E9E-8C17-CB0437A8276F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B5E1D2E-B4FF-422A-AA0E-6BD4B22064CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B5E1D2E-B4FF-422A-AA0E-6BD4B22064CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B5E1D2E-B4FF-422A-AA0E-6BD4B22064CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B5E1D2E-B4FF-422A-AA0E-6BD4B22064CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

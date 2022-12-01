@@ -15,5 +15,10 @@ namespace Repository
             : base(repositoryContext)
         {
         }
+
+        public IEnumerable<Farm> GetAllFarms(bool trackChanges)
+        {
+            return FindAll(trackChanges).ToList();
+        }
     }
 }

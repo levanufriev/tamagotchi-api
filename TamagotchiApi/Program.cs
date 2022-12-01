@@ -15,6 +15,7 @@ builder.Services.AddDbContext<RepositoryContext>(opts =>
     opts.UseSqlServer(builder.Configuration.GetConnectionString("sqlConnection"),
     b => b.MigrationsAssembly("TamagotchiApi")));
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 
