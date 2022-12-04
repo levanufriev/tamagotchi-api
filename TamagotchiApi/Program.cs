@@ -16,10 +16,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.ConfigureLoggerService();
 builder.Services.ConfigureSqlContext(builder.Configuration);
-builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
+builder.Services.ConfigureRepositoryManager();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
+
+var logger = app.Services.GetRequiredService<ILoggerManager>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -28,9 +30,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.ConfigureExceptionHandler(logger);
+
 app.UseHttpsRedirection();
 
-app.UseCors("CorsPolicy");
+app.UseStaticFiles();
 
 app.UseAuthorization();
 

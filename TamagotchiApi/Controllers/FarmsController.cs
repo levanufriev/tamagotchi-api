@@ -11,11 +11,13 @@ namespace TamagotchiApi.Controllers
     public class FarmsController : ControllerBase
     {
         private readonly IRepositoryManager repository;
+        private readonly ILoggerManager logger;
         private readonly IMapper mapper;
 
-        public FarmsController(IRepositoryManager repository, IMapper mapper)
+        public FarmsController(IRepositoryManager repository, ILoggerManager logger, IMapper mapper)
         {
             this.repository = repository;
+            this.logger = logger;
             this.mapper = mapper;
         }
 
