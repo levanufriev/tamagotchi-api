@@ -48,7 +48,7 @@ namespace TamagotchiApi.Controllers
 
             var petDto = mapper.Map<PetDto>(pet);
 
-            return Ok(petDto);
+            return Ok(petDto); 
         }
     }
 }
