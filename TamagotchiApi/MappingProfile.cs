@@ -12,7 +12,7 @@ namespace TamagotchiApi
             CreateMap<Pet, PetDto>();
             CreateMap<FarmForCreationDto, Farm>();
             CreateMap<PetForCreationDto, Pet>();
-            CreateMap<PetForUpdateDto, Pet>();
+            CreateMap<PetForUpdateDto, Pet>().ReverseMap();
             CreateMap<FarmForUpdateDto, Farm>();
         }
     }

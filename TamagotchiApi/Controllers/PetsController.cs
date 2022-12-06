@@ -3,6 +3,7 @@ using Contracts;
 using Entities.DataTransferObjects;
 using Entities.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace TamagotchiApi.Controllers
@@ -136,5 +137,35 @@ namespace TamagotchiApi.Controllers
             return NoContent();
         }
 
+        [HttpPatch("{id}")]
+        public IActionResult PartiallyUpdatePetForFarm(Guid farmId, Guid id, [FromBody] JsonPatchDocument<PetForUpdateDto> patchDoc)
+        {
+            if (patchDoc == null)
+            {
+                logger.LogError("patchDoc object sent from client is null.");
+                return BadRequest("patchDoc object is null");
+            }
+
+            var farm = repository.Farm.GetFarm(farmId, false);
+            if (farm == null)
+            {
+                logger.LogInfo($"Farm with id: {farmId} doesn't exist in the database.");
+            return NotFound();
+            }
+
+            var petEntity = repository.Pet.GetPet(farmId, id, true);
+            if (petEntity == null)
+            {
+                logger.LogInfo($"Pet with id: {id} doesn't exist in the database.");
+                return NotFound();
+            }
+
+            var petToPatch = mapper.Map<PetForUpdateDto>(petEntity);
+            patchDoc.ApplyTo(petToPatch);
+            mapper.Map(petToPatch, petEntity);
+
+            repository.Save();
+            return NoContent();
+        }
     }
 }
