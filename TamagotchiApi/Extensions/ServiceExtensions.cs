@@ -1,8 +1,11 @@
 ﻿using Contracts;
 using Entities;
+using Entities.DataTransferObjects;
+using FluentValidation;
 using LoggerService;
 using Microsoft.EntityFrameworkCore;
 using Repository;
+using TamagotchiApi.Validations;
 
 namespace TamagotchiApi.Extensions
 {
@@ -22,6 +25,11 @@ namespace TamagotchiApi.Extensions
         public static void ConfigureRepositoryManager(this IServiceCollection services)
         {
             services.AddScoped<IRepositoryManager, RepositoryManager>();
+        }
+
+        public static void ConfigureValidators(this IServiceCollection services)
+        {
+            services.AddScoped<IValidator<PetForCreationDto>, PetForCreationValidator>();
         }
     }
 }

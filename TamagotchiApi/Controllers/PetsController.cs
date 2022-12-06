@@ -2,6 +2,7 @@
 using Contracts;
 using Entities.DataTransferObjects;
 using Entities.Models;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -63,12 +64,18 @@ namespace TamagotchiApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreatePetForFarm(Guid farmId, [FromBody] PetForCreationDto pet)
+        public IActionResult CreatePetForFarm(Guid farmId, [FromBody] PetForCreationDto pet, [FromServices] IValidator<PetForCreationDto> validator)
         {
             if (pet == null)
             {
                 logger.LogError("PetForCreationDto object sent from client is null.");
                 return BadRequest("PetForCreationDto object is null");
+            }
+
+            if (!validator.Validate(pet).IsValid)
+            {
+                logger.LogError("Invalid model state for the PetForCreationDto object");
+                return BadRequest("PetForCreationDto object is invalid");
             }
 
             var farm = repository.Farm.GetFarm(farmId, false);
