@@ -1,6 +1,7 @@
 ﻿using Contracts;
 using Entities;
 using Entities.Models;
+using Entities.RequestFeatures;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace Repository
     {
         public PetRepository(RepositoryContext repositoryContext)
             : base(repositoryContext)
-        {                
+        {
         }
 
         public void CreatePetForFarm(Guid farmId, Pet pet)
@@ -33,9 +34,13 @@ namespace Repository
             return await FindByCondition(p => p.FarmId.Equals(farmId) && p.Id.Equals(id), trackChanges).SingleOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<Pet>> GetPetsAsync(Guid farmId, bool trackChanges)
+        public async Task<IEnumerable<Pet>> GetPetsAsync(Guid farmId, PetParameters petParameters, bool trackChanges)
         {
-            return await FindByCondition(p => p.FarmId.Equals(farmId), trackChanges).OrderBy(p => p.Name).ToListAsync();
+            return await FindByCondition(p => p.FarmId.Equals(farmId), trackChanges)
+                            .OrderBy(p => p.Name)
+                            .Skip((petParameters.PageNumber - 1) * petParameters.PageSize)
+                            .Take(petParameters.PageSize)
+                            .ToListAsync();
         }
     }
 }
