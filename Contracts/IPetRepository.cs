@@ -9,8 +9,8 @@ namespace Contracts
 {
     public interface IPetRepository
     {
-        IEnumerable<Pet> GetPets(Guid farmId, bool trackChanges);
-        Pet GetPet(Guid farmId, Guid id, bool trackChanges);
+        Task<IEnumerable<Pet>> GetPetsAsync(Guid farmId, bool trackChanges);
+        Task<Pet> GetPetAsync(Guid farmId, Guid id, bool trackChanges);
         void CreatePetForFarm(Guid farmId, Pet pet);
         void DeletePet(Pet pet);
     }

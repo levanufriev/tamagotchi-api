@@ -10,6 +10,6 @@ namespace Contracts
     {
         IFarmRepository Farm { get; }
         IPetRepository Pet { get; }
-        void Save();
+        Task SaveAsync();
     }
 }

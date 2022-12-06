@@ -25,9 +25,9 @@ namespace TamagotchiApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetFarms()
+        public async Task<IActionResult> GetFarms()
         {
-            var farms = repository.Farm.GetAllFarms(false);
+            var farms = await repository.Farm.GetAllFarmsAsync(false);
 
             var farmsDto = mapper.Map<IEnumerable<FarmDto>>(farms);
 
@@ -35,9 +35,9 @@ namespace TamagotchiApi.Controllers
         }
 
         [HttpGet("{id}", Name = "FarmById")]
-        public IActionResult GetFarm(Guid id)
+        public async Task<IActionResult> GetFarm(Guid id)
         {
-            var farm = repository.Farm.GetFarm(id, false);
+            var farm = await repository.Farm.GetFarmAsync(id, false);
 
             if (farm == null)
             {
@@ -51,7 +51,7 @@ namespace TamagotchiApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateFarm([FromBody] FarmForCreationDto farm)
+        public async Task<IActionResult> CreateFarm([FromBody] FarmForCreationDto farm)
         {
             if(farm == null)
             {
@@ -61,7 +61,7 @@ namespace TamagotchiApi.Controllers
 
             var farmEntity = mapper.Map<Farm>(farm);
             repository.Farm.CreateFarm(farmEntity);
-            repository.Save();
+            await repository.SaveAsync();
 
             var farmDto = mapper.Map<FarmDto>(farmEntity);
 
@@ -69,7 +69,7 @@ namespace TamagotchiApi.Controllers
         }
 
         [HttpGet("collection/({ids})", Name = "FarmCollection")]
-        public IActionResult GetFarmCollection([ModelBinder(BinderType = typeof(ArrayModelBinder))] IEnumerable<Guid> ids)
+        public async Task<IActionResult> GetFarmCollection([ModelBinder(BinderType = typeof(ArrayModelBinder))] IEnumerable<Guid> ids)
         {
             if (ids == null)
             {
@@ -77,7 +77,7 @@ namespace TamagotchiApi.Controllers
                 return BadRequest("Parameter ids is null");
             }
 
-            var farmEntities = repository.Farm.GetByIds(ids, false);
+            var farmEntities = await repository.Farm.GetByIdsAsync(ids, false);
             if (ids.Count() != farmEntities.Count())
             {
                 logger.LogError("Some ids are not valid in a collection");
@@ -88,7 +88,7 @@ namespace TamagotchiApi.Controllers
         }
 
         [HttpPost("collection")]
-        public IActionResult CreateFarmCollection([FromBody] IEnumerable<FarmForCreationDto> farmCollection)
+        public async Task<IActionResult> CreateFarmCollection([FromBody] IEnumerable<FarmForCreationDto> farmCollection)
         {
             if (farmCollection == null)
             {
@@ -102,7 +102,7 @@ namespace TamagotchiApi.Controllers
                 repository.Farm.CreateFarm(farm);
             }
 
-            repository.Save();
+            await repository.SaveAsync();
 
             var farmsDto = mapper.Map<IEnumerable<FarmDto>>(farmEntities);
 
@@ -111,9 +111,9 @@ namespace TamagotchiApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteFarm(Guid id)
+        public async Task<IActionResult> DeleteFarm(Guid id)
         {
-            var farm = repository.Farm.GetFarm(id, false);
+            var farm = await repository.Farm.GetFarmAsync(id, false);
             if (farm == null)
             {
                 logger.LogInfo($"Farm with id: {id} doesn't exist in the database.");
@@ -121,12 +121,12 @@ namespace TamagotchiApi.Controllers
             }
 
             repository.Farm.DeleteFarm(farm);
-            repository.Save();
+            await repository.SaveAsync();
             return NoContent();
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateFarm(Guid id, [FromBody] FarmForUpdateDto farm)
+        public async Task<IActionResult> UpdateFarm(Guid id, [FromBody] FarmForUpdateDto farm)
         {
             if (farm == null)
             {
@@ -134,7 +134,7 @@ namespace TamagotchiApi.Controllers
                 return BadRequest("FarmForUpdateDto object is null");
             }
 
-            var farmEntity = repository.Farm.GetFarm(id, true);
+            var farmEntity = await repository.Farm.GetFarmAsync(id, true);
             if (farmEntity == null)
             {
                 logger.LogInfo($"Farm with id: {id} doesn't exist in the database.");
@@ -142,7 +142,7 @@ namespace TamagotchiApi.Controllers
             }
 
             mapper.Map(farm, farmEntity);
-            repository.Save();
+            await repository.SaveAsync();
             return NoContent();
         }
 

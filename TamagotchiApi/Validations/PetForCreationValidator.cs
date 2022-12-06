@@ -7,7 +7,7 @@ namespace TamagotchiApi.Validations
     {
         public PetForCreationValidator()
         {
-            var msg = "Ошибка в поле {PropertyName}: значение {PropertyValue}";
+            var msg = "Mistake in the field {PropertyName}: value {PropertyValue}";
 
             RuleFor(x => x.Name).NotEmpty();
             RuleFor(x => x.Age).GreaterThan(-1).WithMessage(msg);

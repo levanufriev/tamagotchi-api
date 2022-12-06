@@ -1,6 +1,7 @@
 ﻿using Contracts;
 using Entities;
 using Entities.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,14 +28,14 @@ namespace Repository
             Delete(pet);
         }
 
-        public Pet GetPet(Guid farmId, Guid id, bool trackChanges)
+        public async Task<Pet> GetPetAsync(Guid farmId, Guid id, bool trackChanges)
         {
-            return FindByCondition(p => p.FarmId.Equals(farmId) && p.Id.Equals(id), trackChanges).SingleOrDefault();
+            return await FindByCondition(p => p.FarmId.Equals(farmId) && p.Id.Equals(id), trackChanges).SingleOrDefaultAsync();
         }
 
-        public IEnumerable<Pet> GetPets(Guid farmId, bool trackChanges)
+        public async Task<IEnumerable<Pet>> GetPetsAsync(Guid farmId, bool trackChanges)
         {
-            return FindByCondition(p => p.FarmId.Equals(farmId), trackChanges).OrderBy(p => p.Name);
+            return await FindByCondition(p => p.FarmId.Equals(farmId), trackChanges).OrderBy(p => p.Name).ToListAsync();
         }
     }
 }

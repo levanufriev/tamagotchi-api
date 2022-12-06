@@ -9,10 +9,10 @@ namespace Contracts
 {
     public interface IFarmRepository
     {
-        IEnumerable<Farm> GetAllFarms(bool trackChanges);
-        Farm GetFarm(Guid farmId, bool trackChanges);
+        Task<IEnumerable<Farm>> GetAllFarmsAsync(bool trackChanges);
+        Task<Farm> GetFarmAsync(Guid farmId, bool trackChanges);
         void CreateFarm(Farm farm);
-        IEnumerable<Farm> GetByIds(IEnumerable<Guid> ids, bool trackChanges);
+        Task<IEnumerable<Farm>> GetByIdsAsync(IEnumerable<Guid> ids, bool trackChanges);
         void DeleteFarm(Farm farm);
     }
 }

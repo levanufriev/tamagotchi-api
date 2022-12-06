@@ -25,16 +25,16 @@ namespace TamagotchiApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetPetsForFarm(Guid farmId)
+        public async Task<IActionResult> GetPetsForFarm(Guid farmId)
         {
-            var farm = repository.Farm.GetFarm(farmId, false);
+            var farm = await repository.Farm.GetFarmAsync(farmId, false);
             if (farm == null)
             {
                 logger.LogInfo($"Farm with {farmId} doesn't exist in the database");
                 return NotFound();
             }
 
-            var pets = repository.Pet.GetPets(farmId, false);
+            var pets = await repository.Pet.GetPetsAsync(farmId, false);
 
             var petsDto = mapper.Map<IEnumerable<PetDto>>(pets);
 
@@ -42,16 +42,16 @@ namespace TamagotchiApi.Controllers
         }
 
         [HttpGet("{id}", Name = "GetPetForFarm")]
-        public IActionResult GetPetForFarm(Guid farmId, Guid id)
+        public async Task<IActionResult> GetPetForFarm(Guid farmId, Guid id)
         {
-            var farm = repository.Farm.GetFarm(farmId, false);
+            var farm = await repository.Farm.GetFarmAsync(farmId, false);
             if (farm == null)
             {
                 logger.LogInfo($"Farm with {id} doesn't exist in the database");
                 return NotFound();
             }
 
-            var pet = repository.Pet.GetPet(farmId, id, false);
+            var pet = await repository.Pet.GetPetAsync(farmId, id, false);
             if (pet == null)
             {
                 logger.LogInfo($"Pet with {id} doesn't exist in the database");
@@ -64,7 +64,7 @@ namespace TamagotchiApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreatePetForFarm(Guid farmId, [FromBody] PetForCreationDto pet, [FromServices] IValidator<PetForCreationDto> validator)
+        public async Task<IActionResult> CreatePetForFarm(Guid farmId, [FromBody] PetForCreationDto pet, [FromServices] IValidator<PetForCreationDto> validator)
         {
             if (pet == null)
             {
@@ -78,7 +78,7 @@ namespace TamagotchiApi.Controllers
                 return BadRequest("PetForCreationDto object is invalid");
             }
 
-            var farm = repository.Farm.GetFarm(farmId, false);
+            var farm = await repository.Farm.GetFarmAsync(farmId, false);
             if (farm == null)
             {
                 logger.LogInfo($"Farm with id: {farmId} doesn't exist in the database.");
@@ -87,7 +87,7 @@ namespace TamagotchiApi.Controllers
 
             var petEntity = mapper.Map<Pet>(pet);
             repository.Pet.CreatePetForFarm(farmId, petEntity);
-            repository.Save();
+            await repository.SaveAsync();
 
             var petDto = mapper.Map<PetDto>(petEntity);
 
@@ -95,16 +95,16 @@ namespace TamagotchiApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeletePetForFarm(Guid farmId, Guid id)
+        public async Task<IActionResult> DeletePetForFarm(Guid farmId, Guid id)
         {
-            var farm = repository.Farm.GetFarm(farmId, false);
+            var farm = await repository.Farm.GetFarmAsync(farmId, false);
             if (farm == null)
             {
                 logger.LogInfo($"Farm with id: {farmId} doesn't exist in the database.");
             return NotFound();
             }
 
-            var pet = repository.Pet.GetPet(farmId, id, false);
+            var pet = await repository.Pet.GetPetAsync(farmId, id, false);
             if (pet == null)
             {
                 logger.LogInfo($"Pet with id: {id} doesn't exist in the database.");
@@ -112,12 +112,12 @@ namespace TamagotchiApi.Controllers
             }
 
             repository.Pet.DeletePet(pet);
-            repository.Save();
+            await repository.SaveAsync();
             return NoContent();
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdatePetForFarm(Guid farmId, Guid id, [FromBody] PetForUpdateDto pet)
+        public async Task<IActionResult> UpdatePetForFarm(Guid farmId, Guid id, [FromBody] PetForUpdateDto pet)
         {
             if (pet == null)
             {
@@ -125,14 +125,14 @@ namespace TamagotchiApi.Controllers
                 return BadRequest("PetForUpdateDto object is null");
             }
 
-            var farm = repository.Farm.GetFarm(farmId, false);
+            var farm = await repository.Farm.GetFarmAsync(farmId, false);
             if (farm == null)
             {
                 logger.LogInfo($"Farm with id: {farmId} doesn't exist in the database.");
-            return NotFound();
+                return NotFound();
             }
 
-            var petEntity = repository.Pet.GetPet(farmId, id, true);
+            var petEntity = repository.Pet.GetPetAsync(farmId, id, true);
             if (petEntity == null)
             {
                 logger.LogInfo($"Pet with id: {id} doesn't exist in the database.");
@@ -140,12 +140,12 @@ namespace TamagotchiApi.Controllers
             }
 
             mapper.Map(pet, petEntity);
-            repository.Save();
+            await repository.SaveAsync();
             return NoContent();
         }
 
         [HttpPatch("{id}")]
-        public IActionResult PartiallyUpdatePetForFarm(Guid farmId, Guid id, [FromBody] JsonPatchDocument<PetForUpdateDto> patchDoc)
+        public async Task<IActionResult> PartiallyUpdatePetForFarm(Guid farmId, Guid id, [FromBody] JsonPatchDocument<PetForUpdateDto> patchDoc)
         {
             if (patchDoc == null)
             {
@@ -153,14 +153,14 @@ namespace TamagotchiApi.Controllers
                 return BadRequest("patchDoc object is null");
             }
 
-            var farm = repository.Farm.GetFarm(farmId, false);
+            var farm = await repository.Farm.GetFarmAsync(farmId, false);
             if (farm == null)
             {
                 logger.LogInfo($"Farm with id: {farmId} doesn't exist in the database.");
             return NotFound();
             }
 
-            var petEntity = repository.Pet.GetPet(farmId, id, true);
+            var petEntity = await repository.Pet.GetPetAsync(farmId, id, true);
             if (petEntity == null)
             {
                 logger.LogInfo($"Pet with id: {id} doesn't exist in the database.");
@@ -171,7 +171,7 @@ namespace TamagotchiApi.Controllers
             patchDoc.ApplyTo(petToPatch);
             mapper.Map(petToPatch, petEntity);
 
-            repository.Save();
+            await repository.SaveAsync();
             return NoContent();
         }
     }

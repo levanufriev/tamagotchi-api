@@ -1,6 +1,7 @@
 ﻿using Contracts;
 using Entities;
 using Entities.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,19 +27,19 @@ namespace Repository
             Delete(farm);
         }
 
-        public IEnumerable<Farm> GetAllFarms(bool trackChanges)
+        public async Task<IEnumerable<Farm>> GetAllFarmsAsync(bool trackChanges)
         {
-            return FindAll(trackChanges).OrderBy(f => f.Name).ToList();
+            return await FindAll(trackChanges).OrderBy(f => f.Name).ToListAsync();
         }
 
-        public IEnumerable<Farm> GetByIds(IEnumerable<Guid> ids, bool trackChanges)
+        public async Task<IEnumerable<Farm>> GetByIdsAsync(IEnumerable<Guid> ids, bool trackChanges)
         {
-            return FindByCondition(x => ids.Contains(x.Id), trackChanges).ToList();
+            return await FindByCondition(x => ids.Contains(x.Id), trackChanges).ToListAsync();
         }
 
-        public Farm GetFarm(Guid farmId, bool trackChanges)
+        public async Task<Farm> GetFarmAsync(Guid farmId, bool trackChanges)
         {
-            return FindByCondition(f => f.Id.Equals(farmId), trackChanges).SingleOrDefault();
+            return await FindByCondition(f => f.Id.Equals(farmId), trackChanges).SingleOrDefaultAsync();
         }
     }
 }
