@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Contracts;
 using Entities.DataTransferObjects;
+using Entities.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,11 +12,13 @@ namespace TamagotchiApi.Controllers
     public class PetsController : ControllerBase
     {
         private readonly IRepositoryManager repository;
+        private readonly ILoggerManager logger;
         private readonly IMapper mapper;
 
-        public PetsController(IRepositoryManager repository, IMapper mapper)
+        public PetsController(IRepositoryManager repository, ILoggerManager logger, IMapper mapper)
         {
             this.repository = repository;
+            this.logger = logger;
             this.mapper = mapper;
         }
 
@@ -23,8 +26,9 @@ namespace TamagotchiApi.Controllers
         public IActionResult GetPetsForFarm(Guid farmId)
         {
             var farm = repository.Farm.GetFarm(farmId, false);
-            if (farm == null) 
+            if (farm == null)
             {
+                logger.LogInfo($"Farm with {farmId} doesn't exist in the database");
                 return NotFound();
             }
 
@@ -35,20 +39,51 @@ namespace TamagotchiApi.Controllers
             return Ok(petsDto);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetPetForFarm")]
         public IActionResult GetPetForFarm(Guid farmId, Guid id)
         {
             var farm = repository.Farm.GetFarm(farmId, false);
-            if(farm == null)
+            if (farm == null)
             {
+                logger.LogInfo($"Farm with {id} doesn't exist in the database");
                 return NotFound();
             }
 
             var pet = repository.Pet.GetPet(farmId, id, false);
+            if (pet == null)
+            {
+                logger.LogInfo($"Pet with {id} doesn't exist in the database");
+                return NotFound();
+            }
 
             var petDto = mapper.Map<PetDto>(pet);
 
-            return Ok(petDto); 
+            return Ok(petDto);
+        }
+
+        [HttpPost]
+        public IActionResult CreatePetForFarm(Guid farmId, [FromBody] PetForCreationDto pet)
+        {
+            if (pet == null)
+            {
+                logger.LogError("PetForCreationDto object sent from client is null.");
+                return BadRequest("PetForCreationDto object is null");
+            }
+
+            var farm = repository.Farm.GetFarm(farmId, false);
+            if (farm == null)
+            {
+                logger.LogInfo($"Farm with id: {farmId} doesn't exist in the database.");
+                return NotFound();
+            }
+
+            var petEntity = mapper.Map<Pet>(pet);
+            repository.Pet.CreatePetForFarm(farmId, petEntity);
+            repository.Save();
+
+            var petDto = mapper.Map<PetDto>(petEntity);
+
+            return CreatedAtRoute("GetPetForFarm", new { farmId, id = petDto.Id }, petDto);
         }
     }
 }

@@ -16,9 +16,19 @@ namespace Repository
         {
         }
 
+        public void CreateFarm(Farm farm)
+        {
+            Create(farm);
+        }
+
         public IEnumerable<Farm> GetAllFarms(bool trackChanges)
         {
             return FindAll(trackChanges).OrderBy(f => f.Name).ToList();
+        }
+
+        public IEnumerable<Farm> GetByIds(IEnumerable<Guid> ids, bool trackChanges)
+        {
+            return FindByCondition(x => ids.Contains(x.Id), trackChanges).ToList();
         }
 
         public Farm GetFarm(Guid farmId, bool trackChanges)

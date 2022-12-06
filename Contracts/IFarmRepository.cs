@@ -11,5 +11,7 @@ namespace Contracts
     {
         IEnumerable<Farm> GetAllFarms(bool trackChanges);
         Farm GetFarm(Guid farmId, bool trackChanges);
+        void CreateFarm(Farm farm);
+        IEnumerable<Farm> GetByIds(IEnumerable<Guid> ids, bool trackChanges);
     }
 }

@@ -10,6 +10,8 @@ namespace TamagotchiApi
         {
             CreateMap<Farm, FarmDto>();
             CreateMap<Pet, PetDto>();
+            CreateMap<FarmForCreationDto, Farm>();
+            CreateMap<PetForCreationDto, Pet>();
         }
     }
 }

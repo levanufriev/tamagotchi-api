@@ -16,6 +16,12 @@ namespace Repository
         {                
         }
 
+        public void CreatePetForFarm(Guid farmId, Pet pet)
+        {
+            pet.FarmId = farmId;
+            Create(pet);
+        }
+
         public Pet GetPet(Guid farmId, Guid id, bool trackChanges)
         {
             return FindByCondition(p => p.FarmId.Equals(farmId) && p.Id.Equals(id), trackChanges).SingleOrDefault();
