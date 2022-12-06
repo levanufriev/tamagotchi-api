@@ -85,5 +85,27 @@ namespace TamagotchiApi.Controllers
 
             return CreatedAtRoute("GetPetForFarm", new { farmId, id = petDto.Id }, petDto);
         }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeletePetForFarm(Guid farmId, Guid id)
+        {
+            var farm = repository.Farm.GetFarm(farmId, false);
+            if (farm == null)
+            {
+                logger.LogInfo($"Farm with id: {farmId} doesn't exist in the database.");
+            return NotFound();
+            }
+
+            var pet = repository.Pet.GetPet(farmId, id, false);
+            if (pet == null)
+            {
+                logger.LogInfo($"Pet with id: {id} doesn't exist in the database.");
+                return NotFound();
+            }
+
+            repository.Pet.DeletePet(pet);
+            repository.Save();
+            return NoContent();
+        }
     }
 }

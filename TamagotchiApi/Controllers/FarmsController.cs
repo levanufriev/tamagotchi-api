@@ -109,5 +109,20 @@ namespace TamagotchiApi.Controllers
             var ids = string.Join(",", farmsDto.Select(f => f.Id));
             return CreatedAtRoute("FarmCollection", new { ids }, farmsDto);
         }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteFarm(Guid id)
+        {
+            var farm = repository.Farm.GetFarm(id, false);
+            if (farm == null)
+            {
+                logger.LogInfo($"Farm with id: {id} doesn't exist in the database.");
+                return NotFound();
+            }
+
+            repository.Farm.DeleteFarm(farm);
+            repository.Save();
+            return NoContent();
+        }
     }
 }

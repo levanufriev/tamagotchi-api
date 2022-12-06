@@ -21,6 +21,11 @@ namespace Repository
             Create(farm);
         }
 
+        public void DeleteFarm(Farm farm)
+        {
+            Delete(farm);
+        }
+
         public IEnumerable<Farm> GetAllFarms(bool trackChanges)
         {
             return FindAll(trackChanges).OrderBy(f => f.Name).ToList();
