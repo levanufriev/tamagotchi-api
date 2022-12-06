@@ -107,5 +107,34 @@ namespace TamagotchiApi.Controllers
             repository.Save();
             return NoContent();
         }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdatePetForFarm(Guid farmId, Guid id, [FromBody] PetForUpdateDto pet)
+        {
+            if (pet == null)
+            {
+                logger.LogError("PetForUpdateDto object sent from client is null.");
+                return BadRequest("PetForUpdateDto object is null");
+            }
+
+            var farm = repository.Farm.GetFarm(farmId, false);
+            if (farm == null)
+            {
+                logger.LogInfo($"Farm with id: {farmId} doesn't exist in the database.");
+            return NotFound();
+            }
+
+            var petEntity = repository.Pet.GetPet(farmId, id, true);
+            if (petEntity == null)
+            {
+                logger.LogInfo($"Pet with id: {id} doesn't exist in the database.");
+                return NotFound();
+            }
+
+            mapper.Map(pet, petEntity);
+            repository.Save();
+            return NoContent();
+        }
+
     }
 }

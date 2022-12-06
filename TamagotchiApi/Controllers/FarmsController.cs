@@ -124,5 +124,27 @@ namespace TamagotchiApi.Controllers
             repository.Save();
             return NoContent();
         }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateFarm(Guid id, [FromBody] FarmForUpdateDto farm)
+        {
+            if (farm == null)
+            {
+                logger.LogError("FarmForUpdateDto object sent from client is null.");
+                return BadRequest("FarmForUpdateDto object is null");
+            }
+
+            var farmEntity = repository.Farm.GetFarm(id, true);
+            if (farmEntity == null)
+            {
+                logger.LogInfo($"Farm with id: {id} doesn't exist in the database.");
+                return NotFound();
+            }
+
+            mapper.Map(farm, farmEntity);
+            repository.Save();
+            return NoContent();
+        }
+
     }
 }
