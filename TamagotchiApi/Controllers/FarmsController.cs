@@ -2,6 +2,7 @@
 using Contracts;
 using Entities.DataTransferObjects;
 using Entities.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TamagotchiApi.ModelBinders;
@@ -24,7 +25,7 @@ namespace TamagotchiApi.Controllers
             this.mapper = mapper;
         }
 
-        [HttpGet]
+        [HttpGet, Authorize]
         public async Task<IActionResult> GetFarms()
         {
             var farms = await repository.Farm.GetAllFarmsAsync(false);

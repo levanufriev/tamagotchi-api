@@ -14,6 +14,7 @@ namespace TamagotchiApi
             CreateMap<PetForCreationDto, Pet>();
             CreateMap<PetForUpdateDto, Pet>().ReverseMap();
             CreateMap<FarmForUpdateDto, Farm>();
+            CreateMap<UserForRegistrationDto, User>();
         }
     }
 }

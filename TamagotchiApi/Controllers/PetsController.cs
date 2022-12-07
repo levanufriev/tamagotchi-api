@@ -2,6 +2,7 @@
 using Contracts;
 using Entities.DataTransferObjects;
 using Entities.Models;
+using Entities.RequestFeatures;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
@@ -25,7 +26,7 @@ namespace TamagotchiApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetPetsForFarm(Guid farmId)
+        public async Task<IActionResult> GetPetsForFarm(Guid farmId, [FromQuery] PetParameters petParameters)
         {
             var farm = await repository.Farm.GetFarmAsync(farmId, false);
             if (farm == null)
@@ -34,7 +35,7 @@ namespace TamagotchiApi.Controllers
                 return NotFound();
             }
 
-            var pets = await repository.Pet.GetPetsAsync(farmId, false);
+            var pets = await repository.Pet.GetPetsAsync(farmId, petParameters, false);
 
             var petsDto = mapper.Map<IEnumerable<PetDto>>(pets);
 
