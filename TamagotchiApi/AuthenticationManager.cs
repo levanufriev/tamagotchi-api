@@ -17,8 +17,7 @@ namespace TamagotchiApi
 
         private User user;
 
-        public AuthenticationManager(UserManager<User> userManager, IConfiguration
-        configuration)
+        public AuthenticationManager(UserManager<User> userManager, IConfiguration configuration)
         {
             this.userManager = userManager;
             this.configuration = configuration;
@@ -34,14 +33,13 @@ namespace TamagotchiApi
 
         public async Task<bool> ValidateUser(UserForAuthenticationDto userForAuth)
         {
-            user = await userManager.FindByNameAsync(userForAuth.UserName);
+            user = await userManager.FindByEmailAsync(userForAuth.Email);
             return (user != null && await userManager.CheckPasswordAsync(user, userForAuth.Password));
         }
 
         private SigningCredentials GetSigningCredentials()
         {
-            var key =
-            Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("SECRET"));
+            var key = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("SECRET"));
             var secret = new SymmetricSecurityKey(key);
             return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
         }
@@ -50,7 +48,8 @@ namespace TamagotchiApi
         {
             var claims = new List<Claim> 
             {
-                new Claim(ClaimTypes.Name, user.UserName)
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.NameIdentifier as string, user.Id.ToString())
             };
 
             var roles = await userManager.GetRolesAsync(user);
@@ -64,14 +63,12 @@ namespace TamagotchiApi
         private JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials, List<Claim> claims)
         {
             var jwtSettings = configuration.GetSection("JwtSettings");
-            var tokenOptions = new JwtSecurityToken
-            (
-            issuer: jwtSettings.GetSection("validIssuer").Value,
-            audience: jwtSettings.GetSection("validAudience").Value,
-            claims: claims,
-            expires: DateTime.Now.AddMinutes(Convert.ToDouble(jwtSettings.GetSection("expires").Value)),
-            signingCredentials: signingCredentials
-            );
+            var tokenOptions = new JwtSecurityToken(
+                issuer: jwtSettings.GetSection("validIssuer").Value,
+                audience: jwtSettings.GetSection("validAudience").Value,
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(Convert.ToDouble(jwtSettings.GetSection("expires").Value)),
+                signingCredentials: signingCredentials);
             return tokenOptions;
         }
     }

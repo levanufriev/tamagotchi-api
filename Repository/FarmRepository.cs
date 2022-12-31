@@ -17,8 +17,9 @@ namespace Repository
         {
         }
 
-        public void CreateFarm(Farm farm)
+        public void CreateFarmForUser(Guid userId, Farm farm)
         {
+            farm.Id = userId;
             Create(farm);
         }
 

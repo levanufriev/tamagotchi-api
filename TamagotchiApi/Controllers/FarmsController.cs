@@ -5,6 +5,7 @@ using Entities.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using TamagotchiApi.ModelBinders;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
@@ -25,15 +26,15 @@ namespace TamagotchiApi.Controllers
             this.mapper = mapper;
         }
 
-        [HttpGet, Authorize]
-        public async Task<IActionResult> GetFarms()
-        {
-            var farms = await repository.Farm.GetAllFarmsAsync(false);
+        //[HttpGet]
+        //public async Task<IActionResult> GetFarms()
+        //{
+        //    var farms = await repository.Farm.GetAllFarmsAsync(false);
 
-            var farmsDto = mapper.Map<IEnumerable<FarmDto>>(farms);
+        //    var farmsDto = mapper.Map<IEnumerable<FarmDto>>(farms);
 
-            return Ok(farmsDto);
-        }
+        //    return Ok(farmsDto);
+        //}
 
         [HttpGet("{id}", Name = "FarmById")]
         public async Task<IActionResult> GetFarm(Guid id)
@@ -51,6 +52,24 @@ namespace TamagotchiApi.Controllers
             return Ok(farmDto);
         }
 
+        [HttpGet(Name = "FarmForUser")]
+        [Authorize]
+        public async Task<IActionResult> GetFarmForUser()
+        {
+            var userId = Guid.Parse(User.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
+            var farm = await repository.Farm.GetFarmAsync(userId, false);
+
+            if (farm == null)
+            {
+                logger.LogInfo($"Farm with {userId} doesn't exist in the database");
+                return NotFound();
+            }
+
+            var farmDto = mapper.Map<FarmDto>(farm);
+
+            return Ok(farmDto);
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateFarm([FromBody] FarmForCreationDto farm)
         {
@@ -60,13 +79,14 @@ namespace TamagotchiApi.Controllers
                 return BadRequest("FarmForCreationDto object is null");
             }
 
+            var userId = Guid.Parse(User.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
             var farmEntity = mapper.Map<Farm>(farm);
-            repository.Farm.CreateFarm(farmEntity);
+            repository.Farm.CreateFarmForUser(userId, farmEntity);
             await repository.SaveAsync();
 
             var farmDto = mapper.Map<FarmDto>(farmEntity);
 
-            return CreatedAtRoute("FarmById", new { id = farmDto.Id }, farmDto);
+            return CreatedAtRoute("FarmForUser", farmDto);
         }
 
         [HttpGet("collection/({ids})", Name = "FarmCollection")]
@@ -88,28 +108,28 @@ namespace TamagotchiApi.Controllers
             return Ok(farmsDto);
         }
 
-        [HttpPost("collection")]
-        public async Task<IActionResult> CreateFarmCollection([FromBody] IEnumerable<FarmForCreationDto> farmCollection)
-        {
-            if (farmCollection == null)
-            {
-                logger.LogError("Farm collection sent from client is null.");
-                return BadRequest("Farm collection is null");
-            }
+        //[HttpPost("collection")]
+        //public async Task<IActionResult> CreateFarmCollection([FromBody] IEnumerable<FarmForCreationDto> farmCollection)
+        //{
+        //    if (farmCollection == null)
+        //    {
+        //        logger.LogError("Farm collection sent from client is null.");
+        //        return BadRequest("Farm collection is null");
+        //    }
 
-            var farmEntities = mapper.Map<IEnumerable<Farm>>(farmCollection);
-            foreach (var farm in farmEntities)
-            {
-                repository.Farm.CreateFarm(farm);
-            }
+        //    var farmEntities = mapper.Map<IEnumerable<Farm>>(farmCollection);
+        //    foreach (var farm in farmEntities)
+        //    {
+        //        repository.Farm.CreateFarm(farm);
+        //    }
 
-            await repository.SaveAsync();
+        //    await repository.SaveAsync();
 
-            var farmsDto = mapper.Map<IEnumerable<FarmDto>>(farmEntities);
+        //    var farmsDto = mapper.Map<IEnumerable<FarmDto>>(farmEntities);
 
-            var ids = string.Join(",", farmsDto.Select(f => f.Id));
-            return CreatedAtRoute("FarmCollection", new { ids }, farmsDto);
-        }
+        //    var ids = string.Join(",", farmsDto.Select(f => f.Id));
+        //    return CreatedAtRoute("FarmCollection", new { ids }, farmsDto);
+        //}
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFarm(Guid id)

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace TamagotchiApi.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    [Migration("20221207072841_CreateIdentity")]
-    partial class CreateIdentity
+    [Migration("20221228165321_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,7 +28,6 @@ namespace TamagotchiApi.Migrations
             modelBuilder.Entity("Entities.Models.Farm", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
@@ -38,18 +37,6 @@ namespace TamagotchiApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Farms");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("c9d4c053-49b6-410c-bc78-2d54a9991870"),
-                            Name = "Farm1"
-                        },
-                        new
-                        {
-                            Id = new Guid("3d490a70-94ce-4d15-9494-5248280c2ce3"),
-                            Name = "Farm2"
-                        });
                 });
 
             modelBuilder.Entity("Entities.Models.Pet", b =>
@@ -79,41 +66,13 @@ namespace TamagotchiApi.Migrations
                     b.HasIndex("FarmId");
 
                     b.ToTable("Pets");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("80abbca8-664d-4b20-b5de-024705497d4a"),
-                            Age = 2,
-                            FarmId = new Guid("c9d4c053-49b6-410c-bc78-2d54a9991870"),
-                            HungerLevel = 3,
-                            Name = "Pet1",
-                            ThirstyLevel = 1
-                        },
-                        new
-                        {
-                            Id = new Guid("86dba8c0-d178-41e7-938c-ed49778fb52a"),
-                            Age = 1,
-                            FarmId = new Guid("c9d4c053-49b6-410c-bc78-2d54a9991870"),
-                            HungerLevel = 2,
-                            Name = "Pet2",
-                            ThirstyLevel = 4
-                        },
-                        new
-                        {
-                            Id = new Guid("021ca3c1-0deb-4afd-ae94-2159a8479811"),
-                            Age = 1,
-                            FarmId = new Guid("3d490a70-94ce-4d15-9494-5248280c2ce3"),
-                            HungerLevel = 0,
-                            Name = "Pet3",
-                            ThirstyLevel = 2
-                        });
                 });
 
             modelBuilder.Entity("Entities.Models.User", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
@@ -183,10 +142,11 @@ namespace TamagotchiApi.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -210,7 +170,7 @@ namespace TamagotchiApi.Migrations
                     b.ToTable("AspNetRoles", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -224,9 +184,8 @@ namespace TamagotchiApi.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RoleId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -235,7 +194,7 @@ namespace TamagotchiApi.Migrations
                     b.ToTable("AspNetRoleClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -249,9 +208,8 @@ namespace TamagotchiApi.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -260,7 +218,7 @@ namespace TamagotchiApi.Migrations
                     b.ToTable("AspNetUserClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(450)");
@@ -271,9 +229,8 @@ namespace TamagotchiApi.Migrations
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -282,13 +239,13 @@ namespace TamagotchiApi.Migrations
                     b.ToTable("AspNetUserLogins", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -297,10 +254,10 @@ namespace TamagotchiApi.Migrations
                     b.ToTable("AspNetUserRoles", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(450)");
@@ -316,6 +273,17 @@ namespace TamagotchiApi.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Entities.Models.Farm", b =>
+                {
+                    b.HasOne("Entities.Models.User", "User")
+                        .WithOne("Farm")
+                        .HasForeignKey("Entities.Models.Farm", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Entities.Models.Pet", b =>
                 {
                     b.HasOne("Entities.Models.Farm", "Farm")
@@ -327,16 +295,16 @@ namespace TamagotchiApi.Migrations
                     b.Navigation("Farm");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
                     b.HasOne("Entities.Models.User", null)
                         .WithMany()
@@ -345,7 +313,7 @@ namespace TamagotchiApi.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
                     b.HasOne("Entities.Models.User", null)
                         .WithMany()
@@ -354,9 +322,9 @@ namespace TamagotchiApi.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -369,7 +337,7 @@ namespace TamagotchiApi.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
                     b.HasOne("Entities.Models.User", null)
                         .WithMany()
@@ -381,6 +349,12 @@ namespace TamagotchiApi.Migrations
             modelBuilder.Entity("Entities.Models.Farm", b =>
                 {
                     b.Navigation("Pets");
+                });
+
+            modelBuilder.Entity("Entities.Models.User", b =>
+                {
+                    b.Navigation("Farm")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
